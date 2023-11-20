@@ -11,5 +11,12 @@ $(TGT_DIR)/lox/Lox.class: $(SRC_DIR)/*.java | $(TGT_DIR)
 $(TGT_DIR):
 	mkdir -p $(TGT_DIR)
 
+TOOL_SRC_DIR := src/main/java/tool
+
+tool: $(TGT_DIR)/tool/GenerateAst.class
+
+$(TGT_DIR)/tool/GenerateAst.class: $(TOOL_SRC_DIR)/GenerateAst.java
+	javac -d $(TGT_DIR) $(TOOL_SRC_DIR)/GenerateAst.java
+
 clean:
 	rm -rf $(TGT_DIR)
