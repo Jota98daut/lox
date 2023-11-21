@@ -32,6 +32,18 @@ class Parser {
             expr = new Expr.Binary(expr, operator, right);
         }
 
+        if (match(QUESTION)) {
+            Token operator = previous();
+            Expr right = expression();
+            
+            if (match(COLON)) {
+                Token colon = previous();
+                Expr rightColon = expression();
+                expr = new Expr.Binary(expr, operator, new Expr.Binary(right, colon, rightColon));
+            }
+            else throw error(peek(), "Expect ':' after expression.");
+        }
+
         return expr;
     }
 
