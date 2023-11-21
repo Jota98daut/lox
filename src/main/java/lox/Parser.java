@@ -24,7 +24,15 @@ class Parser {
     }
 
     private Expr expression() {
-        return equality();
+        Expr expr = equality();
+
+        if (match(COMMA)) {
+            Token operator = previous();
+            Expr right = expression();
+            expr = new Expr.Binary(expr, operator, right);
+        }
+
+        return expr;
     }
 
     private Expr equality() {
