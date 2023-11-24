@@ -6,7 +6,6 @@ import java.util.Objects;
 import lox.Expr.Binary;
 import lox.Expr.Grouping;
 import lox.Expr.Literal;
-import lox.Expr.Ternary;
 import lox.Expr.Unary;
 import lox.Expr.Variable;
 import lox.Stmt.Expression;
@@ -176,20 +175,6 @@ class Interpreter implements Expr.Visitor<Object>,
     @Override
     public Object visitVariableExpr(Variable expr) {
         return environment.get(expr.name);
-    }
-
-    @Override
-    public Object visitTernaryExpr(Ternary expr) {
-        Object condition = evaluate(expr.condition);
-        checkBooleanOperand(expr.operator, condition);
-
-        return (boolean)condition ? evaluate(expr.left) : evaluate(expr.right);
-    }
-
-    private void checkBooleanOperand(Token operator, Object condition) {
-        if (condition instanceof Boolean) return;
-
-        throw new RuntimeError(operator, "Condition must be a boolean.");
     }
 
 }

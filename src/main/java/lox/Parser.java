@@ -24,42 +24,9 @@ class Parser {
 
         return statements;
     }
-    
+
     private Expr expression() {
-        return assignment();
-    }
-
-    private Expr assignment() {
-        if (match(COMMA, QUESTION)) {
-            Token operator = previous();
-            equality();
-            throw error(operator, "Expect expression before '" + operator.lexeme + "'.");
-        }
-        Expr expr = equality();
-
-        if (match(COMMA)) {
-            Token operator = previous();
-            Expr right = expression();
-            expr = new Expr.Binary(expr, operator, right);
-        }
-
-        if (match(QUESTION)) {
-            if (match(COLON)) {
-                Token operator = previous();
-                expression();
-                throw error(operator, "Expect expression before ','.");
-            }
-            Token operator = previous();
-            Expr left = expression();
-            
-            if (match(COLON)) {
-                Expr right = expression();
-                expr = new Expr.Ternary(operator, expr, left, right);
-            }
-            else throw error(peek(), "Expect ':' after expression.");
-        }
-
-        return expr;
+        return equality();
     }
 
     private Stmt declaration() {
@@ -103,11 +70,6 @@ class Parser {
     }
 
     private Expr equality() {
-        if (match(BANG_EQUAL, EQUAL_EQUAL)) {
-            Token operator = previous();
-            comparison();
-            throw error(operator, "Expect expression before '" + operator.lexeme + "'.");
-        }
         Expr expr = comparison();
 
         while (match(BANG_EQUAL, EQUAL_EQUAL)) {
@@ -120,11 +82,6 @@ class Parser {
     }
 
     private Expr comparison() {
-        if (match(LESS, LESS_EQUAL, GREATER, GREATER_EQUAL)) {
-            Token operator = previous();
-            term();
-            throw error(operator, "Expect expression before '" + operator.lexeme + "'.");
-        }
         Expr expr = term();
 
         while (match(LESS, LESS_EQUAL, GREATER, GREATER_EQUAL)) {
@@ -137,11 +94,6 @@ class Parser {
     }
 
     private Expr term() {
-        if (match(PLUS)) {
-            Token operator = previous();
-            factor();
-            throw error(operator, "Expect expression before '" + operator.lexeme + "'.");
-        }
         Expr expr = factor();
 
         while (match(MINUS, PLUS)) {
@@ -154,11 +106,6 @@ class Parser {
     }
 
     private Expr factor() {
-        if (match(SLASH, STAR)) {
-            Token operator = previous();
-            unary();
-            throw error(operator, "Expect expression before '" + operator.lexeme + "'.");
-        }
         Expr expr = unary();
 
         while (match(SLASH, STAR)) {
