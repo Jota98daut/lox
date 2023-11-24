@@ -49,9 +49,8 @@ class Parser {
             Expr right = expression();
             
             if (match(COLON)) {
-                Token colon = previous();
-                Expr rightColon = expression();
-                expr = new Expr.Binary(expr, operator, new Expr.Binary(right, colon, rightColon));
+                Expr right = expression();
+                expr = new Expr.Ternary(operator, expr, left, right);
             }
             else throw error(peek(), "Expect ':' after expression.");
         }
