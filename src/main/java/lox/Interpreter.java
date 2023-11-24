@@ -3,6 +3,7 @@ package lox;
 import java.util.List;
 import java.util.Objects;
 
+import lox.Expr.Assign;
 import lox.Expr.Binary;
 import lox.Expr.Grouping;
 import lox.Expr.Literal;
@@ -175,6 +176,13 @@ class Interpreter implements Expr.Visitor<Object>,
     @Override
     public Object visitVariableExpr(Variable expr) {
         return environment.get(expr.name);
+    }
+
+    @Override
+    public Object visitAssignExpr(Assign expr) {
+        Object value = evaluate(expr.value);
+        environment.assign(expr.name, value);
+        return value;
     }
 
 }
