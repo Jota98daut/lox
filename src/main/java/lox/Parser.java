@@ -42,6 +42,7 @@ class Parser {
 
     private Stmt statement() {
         if (match(PRINT)) return printStatement();
+        if (match(LEFT_BRACE)) return new Stmt.Block(block());
 
         return expressionStatement();
     }
@@ -67,6 +68,16 @@ class Parser {
         Expr expr = expression();
         consume(SEMICOLON, "Expect ';' after expression.");
         return new Stmt.Expression(expr);
+    }
+
+    private List<Stmt> block() {
+        List<Stmt> statements = new ArrayList<>();
+
+        while (!check(RIGHT_BRACE) && !isAtEnd())
+            statements.add(declaration());
+
+        consume(RIGHT_BRACE, "Expect '}' after block.");
+        return statements;
     }
 
     private Expr assignment() {
@@ -212,6 +223,12 @@ class Parser {
         return previous();
     }
 
+    /**
+     * Check if the type of the next token matches the given TokenType.
+     * Doesn't consume the token.
+     * @param type the TokenType to match
+     * @return true if the type of the next token matches 'type', false otherwise
+     */
     private boolean check(TokenType type) {
         if (isAtEnd()) return false;
         return peek().type == type;
